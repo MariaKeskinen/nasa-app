@@ -8,6 +8,7 @@
         "moduleResolution": "node",
         "sourceMap": true,
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "outDir": "dist",
         "baseUrl": ".",
         "paths": {
@@ -21,7 +22,8 @@
         }
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        ".env"
     ]
 }
 

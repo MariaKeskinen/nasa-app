@@ -3,15 +3,21 @@ import express from 'express'
 import graphqlHTTP from 'express-graphql'
 import { createSchema } from '@/schema'
 
-const schema = createSchema()
+require('dotenv').config()
+import '@/container'
+
 const app = express()
+
+const schema = createSchema()
+
+const isProduction = process.env.NODE_ENV !== 'production'
 
 app.use(
     '/graphql',
     graphqlHTTP({
         schema,
-        graphiql: true,
-        pretty: true
+        graphiql: !isProduction,
+        pretty: !isProduction
     })
 )
 
