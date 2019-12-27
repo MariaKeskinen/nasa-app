@@ -1,10 +1,10 @@
 import { ApiService } from '@/nasa-api/ApiService'
 import { Repository } from 'typeorm'
-import { Asteroid } from '@/asteroids-neo/Asteroid'
+import { Asteroid } from '@/asteroids/Asteroid'
 import { anything, instance, mock, verify, when } from 'ts-mockito'
-import { AsteroidService } from '@/asteroids-neo/AsteroidService'
+import { AsteroidService } from '@/asteroids/AsteroidService'
 import * as mockResponse from '@/test-helpers/nasa-neo-feed-mock-response.json'
-import { AsteroidMocker } from '@/asteroids-neo/AsteroidMocker'
+import { AsteroidMocker } from '@/asteroids/AsteroidMocker'
 import * as error from 'http-errors'
 
 describe('AsteroidService', () => {

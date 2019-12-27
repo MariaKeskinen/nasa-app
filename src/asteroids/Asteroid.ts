@@ -1,8 +1,8 @@
 import { Arg, Field, Float, ObjectType } from 'type-graphql'
-import { Diameter } from '@/asteroids-neo/Diameter'
-import { UNIT } from '@/asteroids-neo/enums'
-import { CloseApproachData } from '@/asteroids-neo/CloseApproachData'
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Diameter } from '@/asteroids/Diameter'
+import { UNIT } from '@/asteroids/enums'
+import { CloseApproachData } from '@/asteroids/CloseApproachData'
+import { Column, Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
 @ObjectType()
@@ -38,21 +38,25 @@ export class Asteroid {
     estimatedDiameter(
         @Arg('unit', returns => UNIT, { defaultValue: UNIT.KM }) unit: UNIT
     ): Diameter {
+        const data = JSON.parse(this.estimatedDiameterData)
         const values = {
-            min: this.estimatedDiameterData?.[unit]?.estimated_diameter_min,
-            max: this.estimatedDiameterData?.[unit]?.estimated_diameter_max
+            min: data?.[unit]?.estimated_diameter_min,
+            max: data?.[unit]?.estimated_diameter_max
         }
         return new Diameter(values)
     }
 
     @OneToMany(
         type => CloseApproachData,
-        data => data.id
+        closeApproachData => closeApproachData.id,
+        {
+            cascade: true
+        }
     )
-    @Field(type => [CloseApproachData])
-    closeApproachData: CloseApproachData[]
+    closeApproachDataItems: CloseApproachData[]
 
-    private estimatedDiameterData: Record<string, any>
+    @Column()
+    private estimatedDiameterData: string
 
     public static fromApiData(data: Record<string, any>): Asteroid {
         const asteroid = new Asteroid()
@@ -62,12 +66,19 @@ export class Asteroid {
         asteroid.name = data.name
         asteroid.nasaJplUrl = data.nasa_jpl_url
         asteroid.absoluteMagnitudeH = data.absolute_magnitude_h
-        asteroid.estimatedDiameterData = data.estimated_diameter || {}
+        asteroid.estimatedDiameterData = JSON.stringify(data.estimated_diameter || {})
         asteroid.isPotentiallyHazardous = data.is_potentially_hazardous_asteroid
-        asteroid.closeApproachData = data.close_approach_data.map(
-            (d: Record<string, any>) => new CloseApproachData(d)
-        )
+        asteroid.closeApproachDataItems =
+            data.close_approach_data &&
+            data.close_approach_data.map((d: any) => CloseApproachData.fromApiData(d, asteroid))
 
         return asteroid
+    }
+
+    public async save(): Promise<Asteroid> {
+        const repository = getRepository<Asteroid>(Asteroid)
+        const savedAsteroid = await repository.save(this)
+        console.info(`Asteroid id ${savedAsteroid.id} saved to database`)
+        return savedAsteroid
     }
 }

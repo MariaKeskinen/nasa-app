@@ -1,9 +1,9 @@
 import { buildSchemaSync } from 'type-graphql'
-import { NeoResolver } from './asteroids-neo/NeoResolver'
+import { AsteroidResolver } from '@/asteroids/AsteroidResolver'
 import { GraphQLSchema } from 'graphql'
 
 export function createSchema(): GraphQLSchema {
     return buildSchemaSync({
-        resolvers: [NeoResolver]
+        resolvers: [AsteroidResolver]
     })
 }

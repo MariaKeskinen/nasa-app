@@ -1,10 +1,10 @@
 import 'reflect-metadata'
-import { AsteroidService } from '@/asteroids-neo/AsteroidService'
 import { ApiService } from '@/nasa-api/ApiService'
 
 require('dotenv').config()
 import '@/container'
 import { connection } from '@/database'
+import { AsteroidNeoWsService } from '@/nasa-api/AsteroidNeoWsService'
 
 async function fetchNeoFeed() {
     if (process.argv.length < 2) {
@@ -12,7 +12,7 @@ async function fetchNeoFeed() {
         process.exit(1)
     }
 
-    const asteroidService = new AsteroidService(new ApiService())
+    const asteroidNeoWsService = new AsteroidNeoWsService(new ApiService())
 
     const start = process.argv[2]
     const end = process.argv[3]
@@ -20,7 +20,7 @@ async function fetchNeoFeed() {
     console.info(`Importing asteroids from ${start} to ${end}`)
 
     try {
-        const asteroids = await asteroidService.fetchAsteroidFeed(start, end)
+        const asteroids = await asteroidNeoWsService.fetchAsteroidFeed(start, end)
 
         console.info(`Imported ${asteroids.length} asteroids`)
 

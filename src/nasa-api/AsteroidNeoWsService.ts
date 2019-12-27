@@ -1,20 +1,14 @@
 import { Service } from 'typedi'
-import { addDays, isAfter, format, isBefore } from 'date-fns'
 import { ApiService } from '@/nasa-api/ApiService'
-import { Asteroid } from '@/asteroids-neo/Asteroid'
-import { getRepository, Repository } from 'typeorm'
+import { Asteroid } from '@/asteroids/Asteroid'
+import { addDays, format, isAfter, isBefore } from 'date-fns'
 import * as error from 'http-errors'
 
 type DatePeriod = { start: Date; end: Date }
 
 @Service()
-export class AsteroidService {
-    constructor(
-        private readonly apiService: ApiService,
-        private readonly repository?: Repository<Asteroid>
-    ) {
-        this.repository = repository || getRepository(Asteroid)
-    }
+export class AsteroidNeoWsService {
+    constructor(private readonly apiService: ApiService) {}
 
     public async fetchAsteroidFeed(startDate: string, endDate: string): Promise<Asteroid[]> {
         const start = new Date(startDate)
@@ -67,7 +61,7 @@ export class AsteroidService {
     }
 
     private async saveAsteroids(asteroids: Asteroid[]): Promise<Asteroid[]> {
-        return Promise.all(asteroids.map(asteroid => this.repository.save(asteroid)))
+        return Promise.all(asteroids.map(asteroid => asteroid.save()))
     }
 
     private getDatePeriods(start: Date, end: Date, periods: DatePeriod[] = []): DatePeriod[] {
