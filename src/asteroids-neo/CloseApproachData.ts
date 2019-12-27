@@ -1,11 +1,18 @@
 import { Arg, Field, ObjectType } from 'type-graphql'
 import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/asteroids-neo/enums'
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
+@Entity()
 @ObjectType()
 export class CloseApproachData {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
     @Field(type => String, { nullable: true })
     date: string
 
+    @Column()
     @Field(type => String, { nullable: true })
     orbitingBody: string
 

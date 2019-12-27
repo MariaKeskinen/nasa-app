@@ -27,8 +27,9 @@ export class ApiService {
         const fullUrl = `${Container.get(
             'nasaApiBaseUrl'
         )}/${type}?${queryString}`
-        console.log(fullUrl)
-        return axios.get(fullUrl)
+        const response = await axios.get(fullUrl)
+
+        return response.data
     }
 
     private parseQueryString(params: Record<string, string>): string {
