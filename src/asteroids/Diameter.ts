@@ -1,4 +1,5 @@
 import { Field, Float, ObjectType } from 'type-graphql'
+import round from 'lodash.round'
 import { UNIT } from '@/asteroids/enums'
 
 @ObjectType()
@@ -11,17 +12,17 @@ export class Diameter {
 
     @Field(type => Float, { nullable: true })
     avg(): number {
-        return this.getRounded(this.getAverage(), this.round)
+        return round(this.getAverage(), this.round)
     }
 
     private readonly round: number | null
     private readonly unit: UNIT
 
-    constructor(min: number, max: number, unit: UNIT, round: number | null) {
-        this.min = this.getRounded(this.formatValue(min, unit), round)
-        this.max = this.getRounded(this.formatValue(max, unit), round)
+    constructor(min: number, max: number, unit: UNIT, roundTo: number | null) {
+        this.min = round(this.formatValue(min, unit), roundTo)
+        this.max = round(this.formatValue(max, unit), roundTo)
         this.unit = unit
-        this.round = round
+        this.round = roundTo
     }
 
     private formatValue(value: number, unit: UNIT): number | null {
@@ -41,12 +42,5 @@ export class Diameter {
         if (!this.min || !this.max) return null
 
         return (this.min + this.max) / 2
-    }
-
-    private getRounded(value: number, round: number | null): number | null {
-        if (!value) return null
-        if (round === null || round === undefined) return value
-
-        return parseFloat(value.toFixed(round))
     }
 }

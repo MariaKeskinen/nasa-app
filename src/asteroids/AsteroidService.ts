@@ -13,8 +13,19 @@ export class AsteroidService {
         return await getRepository(Asteroid)
             .createQueryBuilder('asteroid')
             .innerJoinAndSelect('asteroid.closeApproachData', 'closeApproachData')
-            .orderBy('closeApproachData.epochDate', sortDirection)
+            .orderBy(this.getSortColumn(sort, sortDirection), sortDirection)
             .take(limit)
             .getMany()
+    }
+
+    private getSortColumn(sort: SortBy, sortDirection: SortDirection): string {
+        switch (sort) {
+            case SortBy.date:
+                return 'closeApproachData.epochDate'
+            case SortBy.diameter:
+                return sortDirection === SortDirection.asc
+                    ? 'asteroid.estimatedDiameterMin'
+                    : 'asteroid.estimatedDiameterMax'
+        }
     }
 }
