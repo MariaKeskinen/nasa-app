@@ -1,14 +1,14 @@
 import { Service } from 'typedi'
-import { Asteroid } from '@/asteroids/Asteroid'
 import { getRepository, Repository } from 'typeorm'
+import { Asteroid } from '@/asteroids/Asteroid'
 
 @Service()
 export class AsteroidService {
     constructor(private readonly repository?: Repository<Asteroid>) {
-        this.repository = repository || getRepository(Asteroid)
+        this.repository = this.repository || getRepository(Asteroid)
     }
 
     public async getAsteroids(): Promise<Asteroid[]> {
-        return this.repository.find({})
+        return this.repository.find({ relations: ['closeApproachData'] })
     }
 }

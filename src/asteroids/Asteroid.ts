@@ -1,4 +1,4 @@
-import { Arg, Field, Float, ObjectType } from 'type-graphql'
+import { Arg, Field, Float, Int, ObjectType } from 'type-graphql'
 import { Diameter } from '@/asteroids/Diameter'
 import { UNIT } from '@/asteroids/enums'
 import { CloseApproachData } from '@/asteroids/CloseApproachData'
@@ -8,33 +8,34 @@ import { Column, Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from
 @ObjectType()
 export class Asteroid {
     @PrimaryGeneratedColumn()
+    @Field(type => Int)
     id: number
 
     @Column()
-    @Field(type => String)
+    @Field(type => String, { nullable: true })
     nasaId: string
 
     @Column()
-    @Field(type => String)
+    @Field(type => String, { nullable: true })
     neoReferenceId: string
 
     @Column()
-    @Field(type => String)
+    @Field(type => String, { nullable: true })
     name: string
 
     @Column()
-    @Field(type => String)
+    @Field(type => String, { nullable: true })
     nasaJplUrl: string
 
     @Column({ type: 'float' })
-    @Field(type => Float)
+    @Field(type => Float, { nullable: true })
     absoluteMagnitudeH: number
 
     @Column({ type: 'boolean' })
-    @Field(type => Boolean)
+    @Field(type => Boolean, { nullable: true })
     isPotentiallyHazardous: boolean
 
-    @Field(type => Diameter)
+    @Field(type => Diameter, { nullable: true })
     estimatedDiameter(
         @Arg('unit', returns => UNIT, { defaultValue: UNIT.KM }) unit: UNIT
     ): Diameter {
@@ -48,12 +49,13 @@ export class Asteroid {
 
     @OneToMany(
         type => CloseApproachData,
-        closeApproachData => closeApproachData.id,
+        closeApproachData => closeApproachData.asteroid,
         {
             cascade: true
         }
     )
-    closeApproachDataItems: CloseApproachData[]
+    @Field(type => [CloseApproachData], { nullable: true })
+    closeApproachData: CloseApproachData[]
 
     @Column()
     private estimatedDiameterData: string
@@ -68,9 +70,9 @@ export class Asteroid {
         asteroid.absoluteMagnitudeH = data.absolute_magnitude_h
         asteroid.estimatedDiameterData = JSON.stringify(data.estimated_diameter || {})
         asteroid.isPotentiallyHazardous = data.is_potentially_hazardous_asteroid
-        asteroid.closeApproachDataItems =
+        asteroid.closeApproachData =
             data.close_approach_data &&
-            data.close_approach_data.map((d: any) => CloseApproachData.fromApiData(d, asteroid))
+            data.close_approach_data.map((d: any) => CloseApproachData.fromApiData(d))
 
         return asteroid
     }

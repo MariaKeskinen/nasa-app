@@ -1,14 +1,6 @@
 import { Arg, Field, ObjectType } from 'type-graphql'
 import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/asteroids/enums'
-import {
-    Column,
-    Entity,
-    getRepository,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-    Repository
-} from 'typeorm'
-import { Service } from 'typedi'
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Asteroid } from '@/asteroids/Asteroid'
 
 @Entity()
@@ -19,7 +11,7 @@ export class CloseApproachData {
 
     @ManyToOne(
         type => Asteroid,
-        asteroid => asteroid.closeApproachDataItems
+        asteroid => asteroid.closeApproachData
     )
     asteroid: Asteroid
 
@@ -42,7 +34,7 @@ export class CloseApproachData {
         return data?.[unit]
     }
 
-    @Field(type => String)
+    @Field(type => String, { nullable: true })
     missDistance(
         @Arg('unit', returns => LONG_DISTANCE_UNIT, {
             defaultValue: LONG_DISTANCE_UNIT.ASTRONOMICAL,
@@ -50,7 +42,7 @@ export class CloseApproachData {
         })
         unit: LONG_DISTANCE_UNIT
     ): string {
-        const data = JSON.parse(this.relativeVelocityData)
+        const data = JSON.parse(this.missDistanceData)
         return data?.[unit]
     }
 
@@ -60,7 +52,7 @@ export class CloseApproachData {
     @Column()
     private missDistanceData: string
 
-    public static fromApiData(data: Record<string, any>, asteroid: Asteroid): CloseApproachData {
+    public static fromApiData(data: Record<string, any>): CloseApproachData {
         const closeApproachData = new CloseApproachData()
         closeApproachData.date = data?.close_approach_date
         closeApproachData.orbitingBody = data?.orbiting_body
