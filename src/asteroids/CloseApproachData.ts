@@ -13,13 +13,14 @@ export class CloseApproachData {
         type => Asteroid,
         asteroid => asteroid.closeApproachData
     )
+    @Field(type => Asteroid)
     asteroid: Asteroid
 
-    @Column()
+    @Column({ nullable: true })
     @Field(type => String, { nullable: true })
     date: string
 
-    @Column()
+    @Column({ nullable: true })
     @Field(type => String, { nullable: true })
     orbitingBody: string
 
@@ -46,11 +47,14 @@ export class CloseApproachData {
         return data?.[unit]
     }
 
-    @Column()
+    @Column({ nullable: true })
     private relativeVelocityData: string
 
-    @Column()
+    @Column({ nullable: true })
     private missDistanceData: string
+
+    @Column({ nullable: true })
+    private epochDate: number
 
     public static fromApiData(data: Record<string, any>): CloseApproachData {
         const closeApproachData = new CloseApproachData()
@@ -58,6 +62,7 @@ export class CloseApproachData {
         closeApproachData.orbitingBody = data?.orbiting_body
         closeApproachData.relativeVelocityData = JSON.stringify(data?.relative_velocity || {})
         closeApproachData.missDistanceData = JSON.stringify(data?.miss_distance || {})
+        closeApproachData.epochDate = data?.epoch_date_close_approach
 
         return closeApproachData
     }

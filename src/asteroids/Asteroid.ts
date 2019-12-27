@@ -11,27 +11,27 @@ export class Asteroid {
     @Field(type => Int)
     id: number
 
-    @Column()
+    @Column({ nullable: true })
     @Field(type => String, { nullable: true })
     nasaId: string
 
-    @Column()
+    @Column({ nullable: true })
     @Field(type => String, { nullable: true })
     neoReferenceId: string
 
-    @Column()
+    @Column({ nullable: true })
     @Field(type => String, { nullable: true })
     name: string
 
-    @Column()
+    @Column({ nullable: true })
     @Field(type => String, { nullable: true })
     nasaJplUrl: string
 
-    @Column({ type: 'float' })
+    @Column({ type: 'float', nullable: true })
     @Field(type => Float, { nullable: true })
     absoluteMagnitudeH: number
 
-    @Column({ type: 'boolean' })
+    @Column({ type: 'boolean', nullable: true })
     @Field(type => Boolean, { nullable: true })
     isPotentiallyHazardous: boolean
 
@@ -57,7 +57,7 @@ export class Asteroid {
     @Field(type => [CloseApproachData], { nullable: true })
     closeApproachData: CloseApproachData[]
 
-    @Column()
+    @Column({ nullable: true })
     private estimatedDiameterData: string
 
     public static fromApiData(data: Record<string, any>): Asteroid {
