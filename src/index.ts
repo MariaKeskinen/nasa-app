@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import express from 'express'
 import graphqlHTTP from 'express-graphql'
+import bodyParser from 'body-parser'
 import { createSchema } from '@/schema'
 
 require('dotenv').config()
@@ -11,14 +12,16 @@ const app = express()
 
 const schema = createSchema()
 
-const isProduction = process.env.NODE_ENV !== 'production'
+const isDevelopment = process.env.NODE_ENV === 'DEVELOPMENT'
 
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(
     '/graphql',
     graphqlHTTP({
         schema,
-        graphiql: !isProduction,
-        pretty: !isProduction
+        graphiql: isDevelopment,
+        pretty: isDevelopment
     })
 )
 

@@ -1,5 +1,6 @@
 import { Args, ArgsType, Field, FieldResolver, Int, Resolver, Root } from 'type-graphql'
 import round from 'lodash.round'
+import { Min } from 'class-validator'
 import { CloseApproachData } from '@/asteroids/CloseApproachData'
 import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/asteroids/enums'
 
@@ -9,6 +10,7 @@ class RelativeVelocityArgs {
     unit: VELOCITY_UNIT
 
     @Field(type => Int, { defaultValue: 5, nullable: true })
+    @Min(0)
     round: number | null
 }
 
@@ -18,6 +20,7 @@ class MissDistanceArgs {
     unit: LONG_DISTANCE_UNIT
 
     @Field(type => Int, { defaultValue: 5, nullable: true })
+    @Min(0)
     round: number | null
 }
 

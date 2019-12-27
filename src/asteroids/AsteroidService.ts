@@ -26,6 +26,8 @@ export class AsteroidService {
                 return sortDirection === SortDirection.asc
                     ? 'asteroid.estimatedDiameterMin'
                     : 'asteroid.estimatedDiameterMax'
+            case SortBy.distance:
+                return 'closeApproachData.missDistanceKm'
         }
     }
 }
