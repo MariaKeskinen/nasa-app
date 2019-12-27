@@ -1,11 +1,12 @@
 {
     "name": "nasa-neo",
     "version": "1.0.0",
-    "description": "Graphql api to get near eatch Asteroid information",
+    "description": "Graphql api to get near each Asteroid information",
     "main": "index.js",
     "scripts": {
         "dev": "nodemon",
-        "test": "jest"
+        "test": "jest",
+        "fetchData": "./node_modules/ts-node/dist/bin.js -r tsconfig-paths/register ./src/scripts/fetch-data.ts"
     },
     "author": "Maria Keskinen (maria.keskinen0@gmail.com)",
     "license": "ISC",
