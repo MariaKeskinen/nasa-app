@@ -31,3 +31,22 @@ export enum LONG_DISTANCE_UNIT {
 registerEnumType(LONG_DISTANCE_UNIT, {
     name: 'LongDistanceUnit'
 })
+
+export enum SortBy {
+    diameter,
+    distance,
+    date
+}
+
+registerEnumType(SortBy, {
+    name: 'SortBy'
+})
+
+export enum SortDirection {
+    desc = 'DESC',
+    asc = 'ASC'
+}
+
+registerEnumType(SortDirection, {
+    name: 'SortDirection'
+})

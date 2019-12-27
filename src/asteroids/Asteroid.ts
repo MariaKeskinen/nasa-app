@@ -1,6 +1,5 @@
-import { Arg, Field, Float, Int, ObjectType } from 'type-graphql'
+import { Field, Float, Int, ObjectType } from 'type-graphql'
 import { Diameter } from '@/asteroids/Diameter'
-import { UNIT } from '@/asteroids/enums'
 import { CloseApproachData } from '@/asteroids/CloseApproachData'
 import { Column, Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
@@ -35,17 +34,14 @@ export class Asteroid {
     @Field(type => Boolean, { nullable: true })
     isPotentiallyHazardous: boolean
 
+    @Column({ type: 'float', nullable: true })
+    estimatedDiameterMin: number
+
+    @Column({ type: 'float', nullable: true })
+    estimatedDiameterMax: number
+
     @Field(type => Diameter, { nullable: true })
-    estimatedDiameter(
-        @Arg('unit', returns => UNIT, { defaultValue: UNIT.KM }) unit: UNIT
-    ): Diameter {
-        const data = JSON.parse(this.estimatedDiameterData)
-        const values = {
-            min: data?.[unit]?.estimated_diameter_min,
-            max: data?.[unit]?.estimated_diameter_max
-        }
-        return new Diameter(values)
-    }
+    estimatedDiameter: Diameter
 
     @OneToMany(
         type => CloseApproachData,
@@ -57,9 +53,6 @@ export class Asteroid {
     @Field(type => [CloseApproachData], { nullable: true })
     closeApproachData: CloseApproachData[]
 
-    @Column({ nullable: true })
-    private estimatedDiameterData: string
-
     public static fromApiData(data: Record<string, any>): Asteroid {
         const asteroid = new Asteroid()
 
@@ -68,7 +61,8 @@ export class Asteroid {
         asteroid.name = data.name
         asteroid.nasaJplUrl = data.nasa_jpl_url
         asteroid.absoluteMagnitudeH = data.absolute_magnitude_h
-        asteroid.estimatedDiameterData = JSON.stringify(data.estimated_diameter || {})
+        asteroid.estimatedDiameterMin = data.estimated_diameter?.meters?.estimated_diameter_min
+        asteroid.estimatedDiameterMax = data.estimated_diameter?.meters?.estimated_diameter_max
         asteroid.isPotentiallyHazardous = data.is_potentially_hazardous_asteroid
         asteroid.closeApproachData =
             data.close_approach_data &&
