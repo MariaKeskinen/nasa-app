@@ -1,4 +1,14 @@
-import { Args, ArgsType, Field, FieldResolver, Int, Query, Resolver, Root } from 'type-graphql'
+import {
+    Args,
+    ArgsType,
+    Field,
+    FieldResolver,
+    InputType,
+    Int,
+    Query,
+    Resolver,
+    Root
+} from 'type-graphql'
 import { Service } from 'typedi'
 import { Asteroid } from '@/asteroids/Asteroid'
 import { AsteroidService } from '@/asteroids/AsteroidService'
@@ -6,8 +16,20 @@ import { SortBy, SortDirection, UNIT } from '@/asteroids/enums'
 import { Max, Min } from 'class-validator'
 import { Diameter } from '@/asteroids/Diameter'
 
+@InputType()
+export class AsteroidsFilter {
+    @Field(type => String)
+    startDate: string
+
+    @Field(type => String)
+    endDate: string
+}
+
 @ArgsType()
 class AsteroidsArgs {
+    @Field(type => AsteroidsFilter)
+    filter: AsteroidsFilter
+
     @Field(type => SortBy, { defaultValue: SortBy.date })
     sort: SortBy
 
@@ -34,9 +56,11 @@ class DiameterArgs {
 @Resolver(Asteroid)
 export class AsteroidResolver {
     @Query(returns => [Asteroid])
-    async asteroids(@Args() { sort, sortDirection, limit }: AsteroidsArgs): Promise<Asteroid[]> {
+    async asteroids(
+        @Args() { filter, sort, sortDirection, limit }: AsteroidsArgs
+    ): Promise<Asteroid[]> {
         const asteroidService = new AsteroidService()
-        return asteroidService.getAsteroids(sort, sortDirection, limit)
+        return asteroidService.getAsteroids(filter, sort, sortDirection, limit)
     }
 
     @FieldResolver()
