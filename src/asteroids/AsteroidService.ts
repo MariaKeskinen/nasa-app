@@ -32,14 +32,15 @@ export class AsteroidService {
     ): SelectQueryBuilder<Asteroid> {
         const startDate = parse(filter.startDate, 'yyyy-MM-dd', new Date())
         const endDate = addDays(parse(filter.endDate, 'yyyy-MM-dd', new Date()), 1)
+        const isPotentiallyHazardous = filter.isPotentiallyHazardous ?? null
 
         query = query
             .where('closeApproachData.epochDate >= :startDate', { startDate })
             .andWhere('closeApproachData.epochDate < :endDate', { endDate })
 
-        if (filter.isPotentiallyHazardous) {
+        if (isPotentiallyHazardous !== null) {
             query.andWhere('asteroid.isPotentiallyHazardous = :isPotentiallyHazardous', {
-                isPotentiallyHazardous: filter.isPotentiallyHazardous
+                isPotentiallyHazardous: isPotentiallyHazardous
             })
         }
 
