@@ -1,5 +1,5 @@
 import { Service } from 'typedi'
-import { addDays, parse } from 'date-fns'
+import { addDays } from 'date-fns'
 import { Asteroid } from '@/asteroids/Asteroid'
 import { SortBy, SortDirection } from '@/asteroids/enums'
 import { getRepository, SelectQueryBuilder } from 'typeorm'
@@ -30,13 +30,15 @@ export class AsteroidService {
         query: SelectQueryBuilder<Asteroid>,
         filter: AsteroidsFilter
     ): SelectQueryBuilder<Asteroid> {
-        const startDate = parse(filter.startDate, 'yyyy-MM-dd', new Date())
-        const endDate = addDays(parse(filter.endDate, 'yyyy-MM-dd', new Date()), 1)
+        const startDate = filter.startDate && new Date(filter.startDate)
+        const endDate = filter.endDate ? addDays(new Date(filter.endDate), 1) : new Date()
         const isPotentiallyHazardous = filter.isPotentiallyHazardous ?? null
 
-        query = query
-            .where('closeApproachData.epochDate >= :startDate', { startDate })
-            .andWhere('closeApproachData.epochDate < :endDate', { endDate })
+        query = query.where('closeApproachData.epochDate < :endDate', { endDate })
+
+        if (startDate) {
+            query.andWhere('closeApproachData.epochDate >= :startDate', { startDate })
+        }
 
         if (isPotentiallyHazardous !== null) {
             query.andWhere('asteroid.isPotentiallyHazardous = :isPotentiallyHazardous', {
