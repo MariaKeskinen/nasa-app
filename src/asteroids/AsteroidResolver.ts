@@ -23,6 +23,9 @@ export class AsteroidsFilter {
 
     @Field(type => String)
     endDate: string
+
+    @Field(type => Boolean, { nullable: true })
+    isPotentiallyHazardous: boolean
 }
 
 @ArgsType()
