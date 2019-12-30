@@ -80,7 +80,10 @@ export class AsteroidService {
         do {
             groups.push(new AsteroidGroupMonth(monthAndYear.month, monthAndYear.year))
             monthAndYear = getNextMonthWithYear(monthAndYear)
-        } while (monthAndYear.month <= lastMonth && monthAndYear.year <= lastYear)
+        } while (
+            monthAndYear.year < lastYear ||
+            (monthAndYear.year === lastYear && monthAndYear.month <= lastMonth)
+        )
 
         return groups
     }

@@ -35,7 +35,7 @@ export class AsteroidsArgs extends QueryBaseArguments<AsteroidsFilter>(Asteroids
     @ValidateNested()
     filter: AsteroidsFilter
 
-    @Field(limit => Int, { defaultValue: 10 })
+    @Field(limit => Int, { nullable: true })
     @Min(1)
     @Max(100)
     limit: number
@@ -43,7 +43,7 @@ export class AsteroidsArgs extends QueryBaseArguments<AsteroidsFilter>(Asteroids
 
 @ArgsType()
 export class DiameterArgs {
-    @Field(type => UNIT, { defaultValue: SortBy.date })
+    @Field(type => UNIT, { defaultValue: UNIT.KM })
     unit: UNIT
 
     @Field(type => Int, { defaultValue: 3, nullable: true })
