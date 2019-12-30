@@ -14,6 +14,7 @@ import { AsteroidService } from '@/asteroids/AsteroidService'
 import { QueryBaseArguments } from '@/graphql/query-arguments/QueryBaseArguments'
 import { Asteroid } from '@/asteroids/Asteroid'
 import { AsteroidsArgs } from '@/asteroids/AsteroidResolverArgs'
+import { Month } from '@/asteroids/enums'
 
 @InputType()
 export class AsteroidGroupByMonthFilter {
@@ -49,5 +50,10 @@ export class AsteroidGroupResolver {
             args.sortDirection,
             args.limit
         )
+    }
+
+    @FieldResolver()
+    month(@Root() root: AsteroidGroupMonth): string {
+        return Month[root.month]
     }
 }
