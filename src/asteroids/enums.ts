@@ -52,7 +52,7 @@ registerEnumType(SortDirection, {
 })
 
 export enum Month {
-    jan = 1,
+    jan,
     feb,
     mar,
     apr,

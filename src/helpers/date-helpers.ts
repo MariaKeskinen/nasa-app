@@ -6,7 +6,7 @@ type MonthAndYear = {
 }
 
 export const getNextMonthWithYear = ({ month, year }: MonthAndYear): MonthAndYear => {
-    if (month + 1 > 12) {
+    if (month + 1 > 11) {
         return {
             month: 1,
             year: year + 1

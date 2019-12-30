@@ -50,8 +50,12 @@ export class AsteroidService {
         limit?: number
     ): Promise<Asteroid[]> {
         if (!filter) filter = {}
-        filter.startDate = format(new Date(year, month, 1), 'dd.MM.yyyy')
-        filter.endDate = format(new Date(year, month, getDate(lastDayOfMonth(month))), 'dd.MM.yyyy')
+        const startDate = new Date(year, month, 1)
+        filter.startDate = format(startDate, 'yyyy-MM-dd')
+        filter.endDate = format(
+            new Date(year, month, getDate(lastDayOfMonth(startDate))),
+            'yyyy-MM-dd'
+        )
 
         return this.getAsteroids(filter, sort, sortDirection, limit)
     }
@@ -63,14 +67,13 @@ export class AsteroidService {
             : subYears(new Date(), 1)
         const endDate = filter?.endDate ? parse(filter?.endDate, 'MM-yyyy', new Date()) : new Date()
 
-        console.log(startDate, endDate)
         const groups: AsteroidGroupMonth[] = []
 
-        const lastMonth = getMonth(endDate) + 1
+        const lastMonth = getMonth(endDate)
         const lastYear = getYear(endDate)
 
         let monthAndYear = {
-            month: getMonth(startDate) + 1,
+            month: getMonth(startDate),
             year: getYear(startDate)
         }
 
