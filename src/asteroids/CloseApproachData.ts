@@ -1,6 +1,6 @@
 import { Arg, Field, Float, ObjectType } from 'type-graphql'
 import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/asteroids/enums'
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, getRepository, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Asteroid } from '@/asteroids/Asteroid'
 
 @Entity()
@@ -50,5 +50,10 @@ export class CloseApproachData {
         closeApproachData.epochDate = data?.epoch_date_close_approach
 
         return closeApproachData
+    }
+
+    public save(): Promise<CloseApproachData> {
+        const repository = getRepository(CloseApproachData)
+        return repository.save(this)
     }
 }
