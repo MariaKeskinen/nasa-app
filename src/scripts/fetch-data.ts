@@ -20,9 +20,7 @@ async function fetchNeoFeed() {
     console.info(`Importing asteroids from ${start} to ${end}`)
 
     try {
-        const asteroids = await asteroidNeoWsService.fetchAsteroidFeed(start, end)
-
-        console.info(`Imported ${asteroids.length} asteroids`)
+        await asteroidNeoWsService.fetchAsteroidFeed(start, end)
 
         process.exit(0)
     } catch (err) {

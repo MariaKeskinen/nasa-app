@@ -10,7 +10,7 @@ type DatePeriod = { start: Date; end: Date }
 export class AsteroidNeoWsService {
     constructor(private readonly apiService: ApiService) {}
 
-    public async fetchAsteroidFeed(startDate: string, endDate: string): Promise<Asteroid[]> {
+    public async fetchAsteroidFeed(startDate: string, endDate: string): Promise<void> {
         const start = new Date(startDate)
         const end = new Date(endDate)
 
@@ -22,34 +22,34 @@ export class AsteroidNeoWsService {
             throw new error.BadRequest('Start date must be same or after end date')
         }
 
+        let asteroidsCount = 0
         const periods = this.getDatePeriods(start, end)
 
-        const apiRequests = periods.map(period =>
-            this.apiService.getNeoFeed(
-                format(period.start, 'yyyy-MM-dd'),
-                format(period.end, 'yyyy-MM-dd')
-            )
-        )
+        // Requests should be made on one by one, because simultaneous requests exceeds the api limits
+        for (let period of periods) {
+            try {
+                const response = await this.apiService.getNeoFeed(
+                    format(period.start, 'yyyy-MM-dd'),
+                    format(period.end, 'yyyy-MM-dd')
+                )
+                const asteroids = this.parseDailyAsteroidData(response)
+                await this.saveAsteroids(asteroids)
 
-        const responses = await Promise.all(apiRequests)
+                console.info(
+                    `Asteroids, ${asteroids.length} pcs, from ${period.start} to ${period.end} fetched and saved.`
+                )
+                asteroidsCount = asteroidsCount + asteroids.length
+            } catch (err) {
+                console.error(err)
+                break
+            }
+        }
 
-        const parsedAsteroids = this.parseApiResponses(responses)
-
-        await this.saveAsteroids(parsedAsteroids)
-
-        return parsedAsteroids
+        console.info(`Imported ${asteroidsCount} asteroids.`)
     }
 
-    private parseApiResponses(apiResponses: Record<string, any>[]): Asteroid[] {
-        return apiResponses.reduce<Asteroid[]>((asteroidArr, apiResponse) => {
-            const dailyAsteroidData = apiResponse?.near_earth_objects || []
-            const dailyAsteroids = this.parseDailyAsteroidData(dailyAsteroidData)
-            return [...asteroidArr, ...dailyAsteroids]
-        }, [])
-    }
-
-    private parseDailyAsteroidData(dailyAsteroidData: any[]): Asteroid[] {
-        if (!dailyAsteroidData) return []
+    private parseDailyAsteroidData(apiResponse: Record<string, any>): Asteroid[] {
+        const dailyAsteroidData = apiResponse?.near_earth_objects || []
 
         return Object.values(dailyAsteroidData).reduce<Asteroid[]>(
             (asteroidsArr: Asteroid[], data: any[]) => {

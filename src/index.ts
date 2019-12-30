@@ -7,6 +7,7 @@ import { createSchema } from '@/schema'
 require('dotenv').config()
 import '@/container'
 import { connection } from '@/database'
+import { Request, Response } from 'express'
 
 const app = express()
 

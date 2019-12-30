@@ -37,7 +37,7 @@ export class CloseApproachData {
     public missDistanceKm: number
 
     @Column({ nullable: true })
-    private epochDate: number
+    public epochDate: number
 
     public static fromApiData(data: Record<string, any>): CloseApproachData {
         const closeApproachData = new CloseApproachData()

@@ -9,10 +9,7 @@ export enum API_TYPES {
 
 @Service()
 export class ApiService {
-    public async getNeoFeed(
-        startDate: string,
-        endDate: string
-    ): Promise<Record<string, any>> {
+    public async getNeoFeed(startDate: string, endDate: string): Promise<Record<string, any>> {
         return this.get(API_TYPES.FEED, {
             start_date: startDate,
             end_date: endDate
@@ -24,9 +21,7 @@ export class ApiService {
         params: Record<string, string>
     ): Promise<Record<string, any>> {
         const queryString = this.parseQueryString(params)
-        const fullUrl = `${Container.get(
-            'nasaApiBaseUrl'
-        )}/${type}?${queryString}`
+        const fullUrl = `${Container.get('nasaApiBaseUrl')}/${type}?${queryString}`
         const response = await axios.get(fullUrl)
 
         return response.data

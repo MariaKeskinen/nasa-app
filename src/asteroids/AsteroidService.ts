@@ -1,9 +1,21 @@
 import { Service } from 'typedi'
-import { addDays } from 'date-fns'
+import {
+    addDays,
+    format,
+    getDate,
+    getMonth,
+    getYear,
+    lastDayOfMonth,
+    parse,
+    subYears
+} from 'date-fns'
+import { getRepository, SelectQueryBuilder } from 'typeorm'
 import { Asteroid } from '@/asteroids/Asteroid'
 import { SortBy, SortDirection } from '@/asteroids/enums'
-import { getRepository, SelectQueryBuilder } from 'typeorm'
-import { AsteroidsFilter } from '@/asteroids/AsteroidResolver'
+import { AsteroidGroupMonth } from '@/asteroids/AsteroidGroup'
+import { AsteroidGroupByMonthFilter } from '@/asteroids/AsteroidGroupResolver'
+import { getNextMonthWithYear } from '@/helpers/date-helpers'
+import { AsteroidsFilter } from '@/asteroids/AsteroidResolverArgs'
 
 @Service()
 export class AsteroidService {
@@ -11,7 +23,7 @@ export class AsteroidService {
         filter: AsteroidsFilter,
         sort: SortBy,
         sortDirection: SortDirection,
-        limit: number
+        limit?: number
     ): Promise<Asteroid[]> {
         const repository = await getRepository(Asteroid)
         let query = repository
@@ -20,15 +32,59 @@ export class AsteroidService {
 
         query = this.addWhereConditions(query, filter)
 
-        return query
-            .orderBy(this.getSortColumn(sort, sortDirection), sortDirection)
-            .take(limit)
-            .getMany()
+        query = query.orderBy(this.getSortColumn(sort, sortDirection), sortDirection)
+
+        if (limit) {
+            query = query.take(limit)
+        }
+
+        return query.getMany()
+    }
+
+    public async getAsteroidsByMonth(
+        month: number,
+        year: number,
+        filter: AsteroidsFilter,
+        sort: SortBy,
+        sortDirection: SortDirection,
+        limit?: number
+    ): Promise<Asteroid[]> {
+        if (!filter) filter = {}
+        filter.startDate = format(new Date(year, month, 1), 'dd.MM.yyyy')
+        filter.endDate = format(new Date(year, month, getDate(lastDayOfMonth(month))), 'dd.MM.yyyy')
+
+        return this.getAsteroids(filter, sort, sortDirection, limit)
+    }
+
+    public getGroupsByMonth(filter: AsteroidGroupByMonthFilter): AsteroidGroupMonth[] {
+        // By default, get results of last year
+        const startDate = filter?.startDate
+            ? parse(filter.startDate, 'MM-yyyy', new Date())
+            : subYears(new Date(), 1)
+        const endDate = filter?.endDate ? parse(filter?.endDate, 'MM-yyyy', new Date()) : new Date()
+
+        console.log(startDate, endDate)
+        const groups: AsteroidGroupMonth[] = []
+
+        const lastMonth = getMonth(endDate) + 1
+        const lastYear = getYear(endDate)
+
+        let monthAndYear = {
+            month: getMonth(startDate) + 1,
+            year: getYear(startDate)
+        }
+
+        do {
+            groups.push(new AsteroidGroupMonth(monthAndYear.month, monthAndYear.year))
+            monthAndYear = getNextMonthWithYear(monthAndYear)
+        } while (monthAndYear.month <= lastMonth && monthAndYear.year <= lastYear)
+
+        return groups
     }
 
     private addWhereConditions(
         query: SelectQueryBuilder<Asteroid>,
-        filter: AsteroidsFilter
+        filter: AsteroidsFilter = {}
     ): SelectQueryBuilder<Asteroid> {
         const startDate = filter.startDate && new Date(filter.startDate)
         const endDate = filter.endDate ? addDays(new Date(filter.endDate), 1) : new Date()

@@ -50,3 +50,22 @@ export enum SortDirection {
 registerEnumType(SortDirection, {
     name: 'SortDirection'
 })
+
+export enum Month {
+    jan = 1,
+    feb,
+    mar,
+    apr,
+    may,
+    jun,
+    jul,
+    aug,
+    sep,
+    oct,
+    nov,
+    dec
+}
+
+registerEnumType(Month, {
+    name: 'Month'
+})
