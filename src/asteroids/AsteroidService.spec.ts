@@ -1,4 +1,3 @@
-import { ApiService } from '@/nasa-api/ApiService'
 import { Repository } from 'typeorm'
 import { Asteroid } from '@/asteroids/Asteroid'
 import { anything, instance, mock, verify, when } from 'ts-mockito'
@@ -6,17 +5,18 @@ import { AsteroidService } from '@/asteroids/AsteroidService'
 import * as mockResponse from '@/test-helpers/nasa-neo-feed-mock-response.json'
 import { AsteroidMocker } from '@/asteroids/mockers/AsteroidMocker'
 import * as error from 'http-errors'
+import { NasaApiService } from '@/nasa-api/NasaApiService'
 
 describe('AsteroidService', () => {
     const mockResponseAsteroidsCount = 9
 
-    let apiServiceMock: ApiService
+    let apiServiceMock: NasaApiService
     let repositoryMock: Repository<Asteroid>
     let asteroidService: AsteroidService
     let asteroid: Asteroid
 
     beforeEach(() => {
-        apiServiceMock = mock(ApiService)
+        apiServiceMock = mock(NasaApiService)
         repositoryMock = mock(Repository)
 
         asteroidService = new AsteroidService(instance(apiServiceMock), instance(repositoryMock))

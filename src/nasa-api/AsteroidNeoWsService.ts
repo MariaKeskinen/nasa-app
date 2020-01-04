@@ -1,17 +1,17 @@
 import { Service } from 'typedi'
-import { ApiService } from '@/nasa-api/ApiService'
-import { Asteroid } from '@/asteroids/Asteroid'
 import { addDays, format, isAfter, isBefore } from 'date-fns'
 import * as error from 'http-errors'
 import { getRepository, Repository } from 'typeorm'
+import { Asteroid } from '@/asteroids/Asteroid'
 import { CloseApproachData } from '@/asteroids/CloseApproachData'
+import { NasaApiService } from '@/nasa-api/NasaApiService'
 
 type DatePeriod = { start: Date; end: Date }
 
 @Service()
 export class AsteroidNeoWsService {
     constructor(
-        private readonly apiService: ApiService,
+        private readonly apiService: NasaApiService,
         private readonly asteroidRepository?: Repository<Asteroid>,
         private readonly cadRepository?: Repository<CloseApproachData>
     ) {

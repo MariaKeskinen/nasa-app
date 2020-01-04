@@ -1,4 +1,4 @@
-import { Container, Inject, Service } from 'typedi'
+import { Container, Service } from 'typedi'
 import axios from 'axios'
 
 export enum API_TYPES {
@@ -8,7 +8,7 @@ export enum API_TYPES {
 }
 
 @Service()
-export class ApiService {
+export class NasaApiService {
     public async getNeoFeed(startDate: string, endDate: string): Promise<Record<string, any>> {
         return this.get(API_TYPES.FEED, {
             start_date: startDate,

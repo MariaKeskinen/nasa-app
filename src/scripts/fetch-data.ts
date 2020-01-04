@@ -1,10 +1,10 @@
 import 'reflect-metadata'
-import { ApiService } from '@/nasa-api/ApiService'
-
-require('dotenv').config()
+import { NasaApiService } from '@/nasa-api/ApiService'
 import '@/container'
 import { connection } from '@/database'
 import { AsteroidNeoWsService } from '@/nasa-api/AsteroidNeoWsService'
+
+require('dotenv').config()
 
 async function fetchNeoFeed() {
     if (process.argv.length < 2) {
@@ -12,7 +12,7 @@ async function fetchNeoFeed() {
         process.exit(1)
     }
 
-    const asteroidNeoWsService = new AsteroidNeoWsService(new ApiService())
+    const asteroidNeoWsService = new AsteroidNeoWsService(new NasaApiService())
 
     const start = process.argv[2]
     const end = process.argv[3]
