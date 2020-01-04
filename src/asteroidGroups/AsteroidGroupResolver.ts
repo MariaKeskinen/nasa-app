@@ -10,11 +10,11 @@ import {
     Root
 } from 'type-graphql'
 import { AsteroidGroupMonth } from '@/asteroidGroups/AsteroidGroup'
-import { AsteroidService } from '@/asteroids/AsteroidService'
 import { QueryBaseArguments } from '@/graphql/query-arguments/QueryBaseArguments'
 import { Asteroid } from '@/asteroids/Asteroid'
 import { AsteroidsArgs } from '@/asteroids/AsteroidResolverArgs'
 import { Month } from '@/helpers/enums'
+import { AsteroidGroupService } from '@/asteroidGroups/AsteroidGroupService'
 
 @InputType()
 export class AsteroidGroupByMonthFilter {
@@ -33,16 +33,16 @@ export class AsteroidGroupByMonthArgs extends QueryBaseArguments<AsteroidGroupBy
 @Service()
 @Resolver(AsteroidGroupMonth)
 export class AsteroidGroupResolver {
+    constructor(private readonly asteroidGroupService: AsteroidGroupService) {}
+
     @Query(returns => [AsteroidGroupMonth])
     async asteroidsByMonth(@Args() args: AsteroidGroupByMonthArgs): Promise<AsteroidGroupMonth[]> {
-        const asteroidService = new AsteroidService()
-        return asteroidService.getGroupsByMonth(args.filter)
+        return this.asteroidGroupService.getGroupsByMonth(args.filter)
     }
 
     @FieldResolver()
     asteroids(@Root() root: AsteroidGroupMonth, @Args() args: AsteroidsArgs): Promise<Asteroid[]> {
-        const asteroidService = new AsteroidService()
-        return asteroidService.getAsteroidsByMonth(
+        return this.asteroidGroupService.getAsteroidsByMonth(
             root.month,
             root.year,
             args.filter,

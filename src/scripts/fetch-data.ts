@@ -1,8 +1,8 @@
 import 'reflect-metadata'
-import { NasaApiService } from '@/nasa-api/ApiService'
 import '@/container'
 import { connection } from '@/database'
 import { AsteroidNeoWsService } from '@/nasa-api/AsteroidNeoWsService'
+import { NasaApiService } from '@/nasa-api/NasaApiService'
 
 require('dotenv').config()
 

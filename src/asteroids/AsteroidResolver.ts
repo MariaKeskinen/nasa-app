@@ -8,13 +8,13 @@ import { AsteroidsArgs, DiameterArgs } from '@/asteroids/AsteroidResolverArgs'
 @Service()
 @Resolver(Asteroid)
 export class AsteroidResolver {
+    constructor(private readonly asteroidService: AsteroidService) {}
+
     @Query(returns => [Asteroid])
     async asteroids(
         @Args() { filter, sort, sortDirection, limit }: AsteroidsArgs
     ): Promise<Asteroid[]> {
-        const asteroidService = new AsteroidService()
-
-        return asteroidService.getAsteroids(filter, sort, sortDirection, limit)
+        return this.asteroidService.getAsteroids(filter, sort, sortDirection, limit)
     }
 
     @FieldResolver()
