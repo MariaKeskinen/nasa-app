@@ -2,7 +2,7 @@ import { Args, ArgsType, Field, FieldResolver, Int, Resolver, Root } from 'type-
 import round from 'lodash.round'
 import { Min } from 'class-validator'
 import { CloseApproachData } from '@/asteroids/CloseApproachData'
-import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/asteroids/enums'
+import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/helpers/enums'
 
 @ArgsType()
 class RelativeVelocityArgs {

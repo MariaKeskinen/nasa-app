@@ -1,6 +1,6 @@
 import { Field, Float, ObjectType } from 'type-graphql'
 import round from 'lodash.round'
-import { UNIT } from '@/asteroids/enums'
+import { UNIT } from '@/helpers/enums'
 
 @ObjectType()
 export class Diameter {

@@ -2,7 +2,7 @@ import { ArgsType, Field, InputType, Int } from 'type-graphql'
 import { IsDateString } from '@/graphql/validators/IsDateString'
 import { IsSameOrBeforeDay } from '@/graphql/validators/IsSameOrBeforeDay'
 import { QueryBaseArguments } from '@/graphql/query-arguments/QueryBaseArguments'
-import { SortBy, SortDirection, UNIT } from '@/asteroids/enums'
+import { SortBy, SortDirection, UNIT } from '@/helpers/enums'
 import { Max, Min, ValidateNested } from 'class-validator'
 
 @InputType()

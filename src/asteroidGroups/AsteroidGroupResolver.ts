@@ -9,12 +9,12 @@ import {
     Resolver,
     Root
 } from 'type-graphql'
-import { AsteroidGroupMonth } from '@/asteroids/AsteroidGroup'
+import { AsteroidGroupMonth } from '@/asteroidGroups/AsteroidGroup'
 import { AsteroidService } from '@/asteroids/AsteroidService'
 import { QueryBaseArguments } from '@/graphql/query-arguments/QueryBaseArguments'
 import { Asteroid } from '@/asteroids/Asteroid'
 import { AsteroidsArgs } from '@/asteroids/AsteroidResolverArgs'
-import { Month } from '@/asteroids/enums'
+import { Month } from '@/helpers/enums'
 
 @InputType()
 export class AsteroidGroupByMonthFilter {

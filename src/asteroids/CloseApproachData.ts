@@ -1,5 +1,5 @@
 import { Arg, Field, Float, ObjectType } from 'type-graphql'
-import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/asteroids/enums'
+import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/helpers/enums'
 import { Column, Entity, getRepository, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Asteroid } from '@/asteroids/Asteroid'
 

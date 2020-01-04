@@ -11,9 +11,9 @@ import {
 } from 'date-fns'
 import { getRepository, SelectQueryBuilder } from 'typeorm'
 import { Asteroid } from '@/asteroids/Asteroid'
-import { SortBy, SortDirection } from '@/asteroids/enums'
-import { AsteroidGroupMonth } from '@/asteroids/AsteroidGroup'
-import { AsteroidGroupByMonthFilter } from '@/asteroids/AsteroidGroupResolver'
+import { SortBy, SortDirection } from '@/helpers/enums'
+import { AsteroidGroupMonth } from '@/asteroidGroups/AsteroidGroup'
+import { AsteroidGroupByMonthFilter } from '@/asteroidGroups/AsteroidGroupResolver'
 import { getNextMonthWithYear } from '@/helpers/date-helpers'
 import { AsteroidsFilter } from '@/asteroids/AsteroidResolverArgs'
 
