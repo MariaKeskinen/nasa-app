@@ -1,19 +1,19 @@
 import { AsteroidService } from '@/services/AsteroidService'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { AsteroidGroupService } from '@/services/AsteroidGroupService'
 import { Asteroid } from '@/entities/Asteroid'
 import { AsteroidMocker } from '@/test-helpers/AsteroidMocker'
 import { SortBy, SortDirection } from '@/helpers/enums'
-import { AsteroidGroupMonth } from '@/entities/AsteroidGroup'
+import { AsteroidMonthService } from '@/services/AsteroidMonthService'
+import { AsteroidMonth } from '@/entities/AsteroidMonth'
 
-describe('AsteroidGroupService', () => {
+describe('AsteroidMonthService', () => {
     let asteroidServiceMock: AsteroidService
-    let asteroidGroupService: AsteroidGroupService
+    let asteroidMonthService: AsteroidMonthService
     let mockedAsteroids: Asteroid[]
 
     beforeEach(() => {
         asteroidServiceMock = mock(AsteroidService)
-        asteroidGroupService = new AsteroidGroupService(instance(asteroidServiceMock))
+        asteroidMonthService = new AsteroidMonthService(instance(asteroidServiceMock))
     })
 
     describe('getAsteroidsByMonth', () => {
@@ -28,10 +28,9 @@ describe('AsteroidGroupService', () => {
             const month = 0
             const year = 2020
 
-            await asteroidGroupService.getAsteroidsByMonth(
+            await asteroidMonthService.getAsteroidsByMonth(
                 month,
                 year,
-                {},
                 SortBy.date,
                 SortDirection.desc,
                 10
@@ -50,40 +49,40 @@ describe('AsteroidGroupService', () => {
 
     describe('getGroupsByMonth', () => {
         it('Should get groups for one month', () => {
-            const filter = {
-                startDate: '12-2019',
-                endDate: '12-2019'
-            }
+            const expectedResult = [new AsteroidMonth(11, 2019)]
 
-            const expectedResult = [new AsteroidGroupMonth(11, 2019)]
-
-            expect(asteroidGroupService.getGroupsByMonth(filter)).toEqual(expectedResult)
+            expect(
+                asteroidMonthService.getGroupsByMonth(
+                    { month: 12, year: 2019 },
+                    { month: 12, year: 2019 }
+                )
+            ).toEqual(expectedResult)
         })
 
         it('Should get groups for multiple months', () => {
-            const filter = {
-                startDate: '12-2019',
-                endDate: '03-2020'
-            }
-
             const expectedResult = [
-                new AsteroidGroupMonth(11, 2019),
-                new AsteroidGroupMonth(0, 2020),
-                new AsteroidGroupMonth(1, 2020),
-                new AsteroidGroupMonth(2, 2020)
+                new AsteroidMonth(11, 2019),
+                new AsteroidMonth(0, 2020),
+                new AsteroidMonth(1, 2020),
+                new AsteroidMonth(2, 2020)
             ]
 
-            expect(asteroidGroupService.getGroupsByMonth(filter)).toEqual(expectedResult)
+            expect(
+                asteroidMonthService.getGroupsByMonth(
+                    { month: 12, year: 2019 },
+                    { month: 3, year: 2020 }
+                )
+            ).toEqual(expectedResult)
         })
 
         it('Should get groups for last year, if no filter given', () => {
             const currentMonth = new Date().getMonth()
             const currentYear = new Date().getFullYear()
 
-            const result = asteroidGroupService.getGroupsByMonth({ startDate: null, endDate: null })
+            const result = asteroidMonthService.getGroupsByMonth(null, null)
 
-            expect(result[0]).toEqual(new AsteroidGroupMonth(currentMonth, currentYear - 1))
-            expect(result[12]).toEqual(new AsteroidGroupMonth(currentMonth, currentYear))
+            expect(result[0]).toEqual(new AsteroidMonth(currentMonth, currentYear - 1))
+            expect(result[12]).toEqual(new AsteroidMonth(currentMonth, currentYear))
         })
     })
 })

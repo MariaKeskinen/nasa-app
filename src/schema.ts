@@ -2,7 +2,7 @@ import { buildSchemaSync } from 'type-graphql'
 import { AsteroidResolver } from '@/resolvers/AsteroidResolver'
 import { GraphQLSchema } from 'graphql'
 import { CloseApproachDataResolver } from '@/resolvers/CloseApproachDataResolver'
-import { AsteroidGroupResolver } from '@/resolvers/AsteroidGroupResolver'
+import { AsteroidMonthResolver } from '@/resolvers/AsteroidMonthResolver'
 import { Container } from 'typedi'
 import { QueryResolver } from '@/resolvers/QueryResolver'
 
@@ -11,7 +11,7 @@ export function createSchema(): GraphQLSchema {
         resolvers: [
             CloseApproachDataResolver,
             AsteroidResolver,
-            AsteroidGroupResolver,
+            AsteroidMonthResolver,
             QueryResolver
         ],
         container: Container

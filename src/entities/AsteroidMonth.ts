@@ -2,7 +2,7 @@ import { Field, Int, ObjectType } from 'type-graphql'
 import { Asteroid } from '@/entities/Asteroid'
 
 @ObjectType()
-export class AsteroidGroupMonth {
+export class AsteroidMonth {
     @Field(type => String)
     month: number
 

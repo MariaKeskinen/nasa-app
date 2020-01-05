@@ -2,13 +2,13 @@ import { Service } from 'typedi'
 import { SortBy, SortDirection } from '@/helpers/enums'
 import { Asteroid } from '@/entities/Asteroid'
 import { format, getDate, getMonth, getYear, lastDayOfMonth, subYears } from 'date-fns'
-import { AsteroidGroupMonth } from '@/entities/AsteroidGroup'
 import { getNextMonthWithYear } from '@/helpers/date-helpers'
 import { AsteroidService } from '@/services/AsteroidService'
 import { MonthYearArgs } from '@/resolvers/QueryArguments'
+import { AsteroidMonth } from '@/entities/AsteroidMonth'
 
 @Service()
-export class AsteroidGroupService {
+export class AsteroidMonthService {
     constructor(private readonly asteroidService: AsteroidService) {}
 
     public async getAsteroidsByMonth(
@@ -28,12 +28,12 @@ export class AsteroidGroupService {
         return this.asteroidService.getAsteroids(filter, sort, sortDirection, limit)
     }
 
-    public getGroupsByMonth(start: MonthYearArgs, end: MonthYearArgs): AsteroidGroupMonth[] {
+    public getGroupsByMonth(start: MonthYearArgs, end: MonthYearArgs): AsteroidMonth[] {
         // By default, get results of last year
         const startDate = start ? new Date(start.year, start.month, 1) : subYears(new Date(), 1)
         const endDate = end ? new Date(end.year, end.month, 1) : new Date()
 
-        const groups: AsteroidGroupMonth[] = []
+        const groups: AsteroidMonth[] = []
 
         const lastMonth = getMonth(endDate)
         const lastYear = getYear(endDate)
@@ -44,7 +44,7 @@ export class AsteroidGroupService {
         }
 
         do {
-            groups.push(new AsteroidGroupMonth(monthAndYear.month, monthAndYear.year))
+            groups.push(new AsteroidMonth(monthAndYear.month, monthAndYear.year))
             monthAndYear = getNextMonthWithYear(monthAndYear)
         } while (
             monthAndYear.year < lastYear ||

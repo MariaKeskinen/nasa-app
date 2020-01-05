@@ -1,25 +1,22 @@
 import { Service } from 'typedi'
 import { Args, ArgsType, FieldResolver, Resolver, Root } from 'type-graphql'
-import { AsteroidGroupMonth } from '@/entities/AsteroidGroup'
 import { Asteroid } from '@/entities/Asteroid'
 import { Month } from '@/helpers/enums'
-import { AsteroidGroupService } from '@/services/AsteroidGroupService'
 import { SortLimitArgs } from '@/resolvers/QueryArguments'
+import { AsteroidMonthService } from '@/services/AsteroidMonthService'
+import { AsteroidMonth } from '@/entities/AsteroidMonth'
 
 @ArgsType()
 class MonthlyAsteroidArgs extends SortLimitArgs {}
 
 @Service()
-@Resolver(AsteroidGroupMonth)
-export class AsteroidGroupResolver {
-    constructor(private readonly asteroidGroupService: AsteroidGroupService) {}
+@Resolver(AsteroidMonth)
+export class AsteroidMonthResolver {
+    constructor(private readonly asteroidMonthService: AsteroidMonthService) {}
 
     @FieldResolver()
-    asteroids(
-        @Root() root: AsteroidGroupMonth,
-        @Args() args: MonthlyAsteroidArgs
-    ): Promise<Asteroid[]> {
-        return this.asteroidGroupService.getAsteroidsByMonth(
+    asteroids(@Root() root: AsteroidMonth, @Args() args: MonthlyAsteroidArgs): Promise<Asteroid[]> {
+        return this.asteroidMonthService.getAsteroidsByMonth(
             root.month,
             root.year,
             args.sort,
@@ -29,7 +26,7 @@ export class AsteroidGroupResolver {
     }
 
     @FieldResolver()
-    month(@Root() root: AsteroidGroupMonth): string {
+    month(@Root() root: AsteroidMonth): string {
         return Month[root.month]
     }
 }
