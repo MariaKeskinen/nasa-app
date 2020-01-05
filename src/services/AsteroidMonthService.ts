@@ -30,8 +30,8 @@ export class AsteroidMonthService {
 
     public getGroupsByMonth(start: MonthYearArgs, end: MonthYearArgs): AsteroidMonth[] {
         // By default, get results of last year
-        const startDate = start ? new Date(start.year, start.month, 1) : subYears(new Date(), 1)
-        const endDate = end ? new Date(end.year, end.month, 1) : new Date()
+        const startDate = start ? new Date(start.year, start.month - 1, 1) : subYears(new Date(), 1)
+        const endDate = end ? new Date(end.year, end.month - 1, 1) : new Date()
 
         const groups: AsteroidMonth[] = []
 
