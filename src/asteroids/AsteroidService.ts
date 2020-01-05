@@ -1,20 +1,23 @@
 import { Service } from 'typedi'
 import { addDays } from 'date-fns'
-import { getRepository, SelectQueryBuilder } from 'typeorm'
+import { getRepository, Repository, SelectQueryBuilder } from 'typeorm'
 import { Asteroid } from '@/asteroids/Asteroid'
 import { SortBy, SortDirection } from '@/helpers/enums'
 import { AsteroidsFilter } from '@/asteroids/AsteroidResolverArgs'
 
 @Service()
 export class AsteroidService {
+    constructor(private readonly asteroidRepository?: Repository<Asteroid>) {
+        this.asteroidRepository = asteroidRepository || getRepository(Asteroid)
+    }
+
     public async getAsteroids(
         filter: AsteroidsFilter,
         sort: SortBy,
         sortDirection: SortDirection,
         limit?: number
     ): Promise<Asteroid[]> {
-        const repository = await getRepository(Asteroid)
-        let query = repository
+        let query = this.asteroidRepository
             .createQueryBuilder('asteroid')
             .innerJoinAndSelect('asteroid.closeApproachData', 'closeApproachData')
 

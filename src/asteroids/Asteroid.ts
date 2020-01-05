@@ -1,7 +1,7 @@
 import { Field, Float, Int, ObjectType } from 'type-graphql'
 import { Diameter } from '@/asteroids/Diameter'
 import { CloseApproachData } from '@/asteroids/CloseApproachData'
-import { Column, Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
 @ObjectType()
@@ -69,12 +69,5 @@ export class Asteroid {
             data.close_approach_data.map((d: any) => CloseApproachData.fromApiData(d))
 
         return asteroid
-    }
-
-    public async save(): Promise<Asteroid> {
-        const repository = getRepository<Asteroid>(Asteroid)
-        const savedAsteroid = await repository.save(this)
-        console.info(`Asteroid id ${savedAsteroid.id} saved to database`)
-        return savedAsteroid
     }
 }

@@ -77,14 +77,14 @@ export class AsteroidNeoWsService {
                 cadData.map(async (d: any) => {
                     const cad = CloseApproachData.fromApiData(d)
                     cad.asteroid = existingAsteroid
-                    return cad.save()
+                    return this.cadRepository.save(cad)
                 })
             )
             return existingAsteroid
         }
 
         const newAsteroid = Asteroid.fromApiData(data)
-        return newAsteroid.save()
+        return this.asteroidRepository.save(newAsteroid)
     }
 
     private getDatePeriods(start: Date, end: Date, periods: DatePeriod[] = []): DatePeriod[] {
