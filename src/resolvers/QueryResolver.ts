@@ -5,6 +5,7 @@ import { DateFilter, MonthYearArgs, SortLimitArgs } from '@/resolvers/QueryArgum
 import { ValidateNested } from 'class-validator'
 import { AsteroidMonthService } from '@/services/AsteroidMonthService'
 import { AsteroidMonth } from '@/entities/AsteroidMonth'
+import { CloseApproachData } from '@/entities/CloseApproachData'
 
 @InputType()
 export class AsteroidsFilter extends DateFilter {
@@ -44,11 +45,15 @@ export class QueryResolver {
         return this.asteroidService.getAsteroids(filter, sort, sortDirection, limit)
     }
 
+    @Query(returns => [CloseApproachData])
+    async asteroidApproaches(
+        @Args() { filter, sort, sortDirection, limit }: AsteroidsArgs
+    ): Promise<CloseApproachData[]> {
+        return this.asteroidService.getCloseApproachData(filter, sort, sortDirection, limit)
+    }
+
     @Query(returns => [AsteroidMonth])
     async asteroidsByMonth(@Args() { start, end }: AsteroidMonthArgs): Promise<AsteroidMonth[]> {
         return this.asteroidMonthService.getGroupsByMonth(start, end)
     }
-
-    // @Query()
-    // closeApproachData(): CloseApproachData[] {}
 }

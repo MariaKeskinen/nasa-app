@@ -6,6 +6,7 @@ import { getNextMonthWithYear } from '@/helpers/date-helpers'
 import { AsteroidService } from '@/services/AsteroidService'
 import { MonthYearArgs } from '@/resolvers/QueryArguments'
 import { AsteroidMonth } from '@/entities/AsteroidMonth'
+import { CloseApproachData } from '@/entities/CloseApproachData'
 
 @Service()
 export class AsteroidMonthService {
@@ -26,6 +27,23 @@ export class AsteroidMonthService {
         }
 
         return this.asteroidService.getAsteroids(filter, sort, sortDirection, limit)
+    }
+
+    public async getAsteroidApproachesByMonth(
+        month: number,
+        year: number,
+        sort: SortBy,
+        sortDirection: SortDirection,
+        limit?: number
+    ): Promise<CloseApproachData[]> {
+        const startDate = new Date(year, month, 1)
+
+        const filter = {
+            startDate: format(startDate, 'yyyy-MM-dd'),
+            endDate: format(new Date(year, month, getDate(lastDayOfMonth(startDate))), 'yyyy-MM-dd')
+        }
+
+        return this.asteroidService.getCloseApproachData(filter, sort, sortDirection, limit)
     }
 
     public getGroupsByMonth(start: MonthYearArgs, end: MonthYearArgs): AsteroidMonth[] {
