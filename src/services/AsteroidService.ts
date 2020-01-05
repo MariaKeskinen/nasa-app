@@ -46,12 +46,16 @@ export class AsteroidService {
             case 'asteroid':
                 queryBuilder = await getManager()
                     .createQueryBuilder(Asteroid, 'asteroid')
-                    .innerJoinAndSelect('asteroid.closeApproachData', 'closeApproachData')
+                    .leftJoinAndSelect('asteroid.closeApproachData', 'closeApproachData')
+                if (filter.listAllApproaches) {
+                    queryBuilder.leftJoin('asteroid.closeApproachData', 'closeApproachDataFilter')
+                }
                 break
             case 'closeApproachData':
                 queryBuilder = await getManager()
                     .createQueryBuilder(CloseApproachData, 'closeApproachData')
                     .innerJoinAndSelect('closeApproachData.asteroid', 'asteroid')
+                break
         }
 
         let query = this.addWhereConditions(queryBuilder, filter)
@@ -80,10 +84,14 @@ export class AsteroidService {
         const endDate = filter.endDate ? addDays(new Date(filter.endDate), 1) : new Date()
         const isPotentiallyHazardous = filter.isPotentiallyHazardous ?? null
 
-        query = query.where('closeApproachData.epochDate < :endDate', { endDate })
+        const closeApproachDataField = filter.listAllApproaches
+            ? 'closeApproachDataFilter'
+            : 'closeApproachData'
+
+        query = query.where(`${closeApproachDataField}.epochDate < :endDate`, { endDate })
 
         if (startDate) {
-            query.andWhere('closeApproachData.epochDate >= :startDate', { startDate })
+            query.andWhere(`${closeApproachDataField}.epochDate >= :startDate`, { startDate })
         }
 
         if (isPotentiallyHazardous !== null) {

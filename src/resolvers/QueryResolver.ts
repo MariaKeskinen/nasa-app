@@ -11,6 +11,13 @@ import { CloseApproachData } from '@/entities/CloseApproachData'
 export class AsteroidsFilter extends DateFilter {
     @Field(type => Boolean, { nullable: true })
     isPotentiallyHazardous?: boolean
+
+    @Field(type => Boolean, {
+        defaultValue: false,
+        description:
+            'List all of the asteroids approaches, not only those within selected time period'
+    })
+    listAllApproaches?: boolean
 }
 
 @ArgsType()
