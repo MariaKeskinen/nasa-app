@@ -1,6 +1,6 @@
 import { Field, Float, ObjectType } from 'type-graphql'
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { Asteroid } from '@/asteroids/Asteroid'
+import { Asteroid } from '@/entities/Asteroid'
 
 @Entity()
 @ObjectType()

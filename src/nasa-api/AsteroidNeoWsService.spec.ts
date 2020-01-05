@@ -1,11 +1,11 @@
 import { Repository } from 'typeorm'
-import { Asteroid } from '@/asteroids/Asteroid'
+import { Asteroid } from '@/entities/Asteroid'
 import { anything, instance, mock, verify, when } from 'ts-mockito'
 import * as mockResponse from '@/test-helpers/nasa-neo-feed-mock-response.json'
-import { AsteroidMocker } from '@/asteroids/mockers/AsteroidMocker'
+import { AsteroidMocker } from '@/test-helpers/AsteroidMocker'
 import * as error from 'http-errors'
 import { NasaApiService } from '@/nasa-api/NasaApiService'
-import { CloseApproachData } from '@/asteroids/CloseApproachData'
+import { CloseApproachData } from '@/entities/CloseApproachData'
 import { AsteroidNeoWsService } from '@/nasa-api/AsteroidNeoWsService'
 
 describe('AsteroidNeoWsService', () => {

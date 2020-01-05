@@ -1,12 +1,11 @@
 import { Service } from 'typedi'
-import { AsteroidsFilter } from '@/asteroids/AsteroidResolverArgs'
 import { SortBy, SortDirection } from '@/helpers/enums'
-import { Asteroid } from '@/asteroids/Asteroid'
-import { format, getDate, getMonth, getYear, lastDayOfMonth, parse, subYears } from 'date-fns'
-import { AsteroidGroupByMonthFilter } from '@/asteroidGroups/AsteroidGroupResolver'
-import { AsteroidGroupMonth } from '@/asteroidGroups/AsteroidGroup'
+import { Asteroid } from '@/entities/Asteroid'
+import { format, getDate, getMonth, getYear, lastDayOfMonth, subYears } from 'date-fns'
+import { AsteroidGroupMonth } from '@/entities/AsteroidGroup'
 import { getNextMonthWithYear } from '@/helpers/date-helpers'
-import { AsteroidService } from '@/asteroids/AsteroidService'
+import { AsteroidService } from '@/services/AsteroidService'
+import { MonthYearArgs } from '@/resolvers/QueryArguments'
 
 @Service()
 export class AsteroidGroupService {
@@ -15,28 +14,24 @@ export class AsteroidGroupService {
     public async getAsteroidsByMonth(
         month: number,
         year: number,
-        filter: AsteroidsFilter,
         sort: SortBy,
         sortDirection: SortDirection,
         limit?: number
     ): Promise<Asteroid[]> {
-        if (!filter) filter = {}
         const startDate = new Date(year, month, 1)
-        filter.startDate = format(startDate, 'yyyy-MM-dd')
-        filter.endDate = format(
-            new Date(year, month, getDate(lastDayOfMonth(startDate))),
-            'yyyy-MM-dd'
-        )
+
+        const filter = {
+            startDate: format(startDate, 'yyyy-MM-dd'),
+            endDate: format(new Date(year, month, getDate(lastDayOfMonth(startDate))), 'yyyy-MM-dd')
+        }
 
         return this.asteroidService.getAsteroids(filter, sort, sortDirection, limit)
     }
 
-    public getGroupsByMonth(filter: AsteroidGroupByMonthFilter): AsteroidGroupMonth[] {
+    public getGroupsByMonth(start: MonthYearArgs, end: MonthYearArgs): AsteroidGroupMonth[] {
         // By default, get results of last year
-        const startDate = filter?.startDate
-            ? parse(filter.startDate, 'MM-yyyy', new Date())
-            : subYears(new Date(), 1)
-        const endDate = filter?.endDate ? parse(filter?.endDate, 'MM-yyyy', new Date()) : new Date()
+        const startDate = start ? new Date(start.year, start.month, 1) : subYears(new Date(), 1)
+        const endDate = end ? new Date(end.year, end.month, 1) : new Date()
 
         const groups: AsteroidGroupMonth[] = []
 

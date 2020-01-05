@@ -33,7 +33,9 @@ registerEnumType(LONG_DISTANCE_UNIT, {
 })
 
 export enum SortBy {
-    diameter,
+    diameterMin,
+    diameterMax,
+    diameterAvg,
     distance,
     date
 }

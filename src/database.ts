@@ -1,6 +1,6 @@
 import { createConnection } from 'typeorm'
-import { Asteroid } from '@/asteroids/Asteroid'
-import { CloseApproachData } from '@/asteroids/CloseApproachData'
+import { Asteroid } from '@/entities/Asteroid'
+import { CloseApproachData } from '@/entities/CloseApproachData'
 
 export const connection = createConnection({
     type: 'sqlite',

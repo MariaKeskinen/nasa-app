@@ -2,8 +2,8 @@ import { Service } from 'typedi'
 import { addDays, format, isAfter, isBefore } from 'date-fns'
 import * as error from 'http-errors'
 import { getRepository, Repository } from 'typeorm'
-import { Asteroid } from '@/asteroids/Asteroid'
-import { CloseApproachData } from '@/asteroids/CloseApproachData'
+import { Asteroid } from '@/entities/Asteroid'
+import { CloseApproachData } from '@/entities/CloseApproachData'
 import { NasaApiService } from '@/nasa-api/NasaApiService'
 
 type DatePeriod = { start: Date; end: Date }

@@ -1,4 +1,4 @@
-import { Asteroid } from '@/asteroids/Asteroid'
+import { Asteroid } from '@/entities/Asteroid'
 import * as singleAsteroidData from '@/test-helpers/nasa-neo-feed-single-asteroid.json'
 
 export class AsteroidMocker {

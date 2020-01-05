@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from 'type-graphql'
-import { Asteroid } from '@/asteroids/Asteroid'
+import { Asteroid } from '@/entities/Asteroid'
 
 @ObjectType()
 export class AsteroidGroupMonth {

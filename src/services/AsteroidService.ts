@@ -1,14 +1,19 @@
 import { Service } from 'typedi'
 import { addDays } from 'date-fns'
 import { getRepository, Repository, SelectQueryBuilder } from 'typeorm'
-import { Asteroid } from '@/asteroids/Asteroid'
+import { Asteroid } from '@/entities/Asteroid'
 import { SortBy, SortDirection } from '@/helpers/enums'
-import { AsteroidsFilter } from '@/asteroids/AsteroidResolverArgs'
+import { AsteroidsFilter } from '@/resolvers/QueryResolver'
 
 @Service()
 export class AsteroidService {
-    constructor(private readonly asteroidRepository?: Repository<Asteroid>) {
-        this.asteroidRepository = asteroidRepository || getRepository(Asteroid)
+    private readonly asteroidRepository: Repository<Asteroid>
+
+    constructor(asteroidRepository?: Repository<Asteroid>) {
+        this.asteroidRepository =
+            Object.keys(asteroidRepository).length > 0
+                ? asteroidRepository
+                : getRepository(Asteroid)
     }
 
     public async getAsteroids(
@@ -23,7 +28,7 @@ export class AsteroidService {
 
         query = this.addWhereConditions(query, filter)
 
-        query = query.orderBy(this.getSortColumn(sort, sortDirection), sortDirection)
+        query = query.orderBy(this.getSortColumn(sort), sortDirection, 'NULLS LAST')
 
         if (limit) {
             query = query.take(limit)
@@ -55,14 +60,16 @@ export class AsteroidService {
         return query
     }
 
-    private getSortColumn(sort: SortBy, sortDirection: SortDirection): string {
+    private getSortColumn(sort: SortBy): string {
         switch (sort) {
             case SortBy.date:
                 return 'closeApproachData.epochDate'
-            case SortBy.diameter:
-                return sortDirection === SortDirection.asc
-                    ? 'asteroid.estimatedDiameterMin'
-                    : 'asteroid.estimatedDiameterMax'
+            case SortBy.diameterMin:
+                return 'asteroid.estimatedDiameterMin'
+            case SortBy.diameterMax:
+                return 'asteroid.estimatedDiameterMax'
+            case SortBy.diameterAvg:
+                return '(asteroid.estimatedDiameterMin + asteroid.estimatedDiameterMax) / 2'
             case SortBy.distance:
                 return 'closeApproachData.missDistanceKm'
         }

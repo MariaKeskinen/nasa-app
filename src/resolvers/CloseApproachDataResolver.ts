@@ -1,11 +1,11 @@
 import { Args, ArgsType, Field, FieldResolver, Int, Resolver, Root } from 'type-graphql'
 import round from 'lodash.round'
-import { Min } from 'class-validator'
-import { CloseApproachData } from '@/asteroids/CloseApproachData'
+import { CloseApproachData } from '@/entities/CloseApproachData'
 import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/helpers/enums'
+import { Min } from 'class-validator'
 
 @ArgsType()
-class RelativeVelocityArgs {
+export class RelativeVelocityArgs {
     @Field(type => VELOCITY_UNIT, { defaultValue: VELOCITY_UNIT.KM_H })
     unit: VELOCITY_UNIT
 
@@ -15,7 +15,7 @@ class RelativeVelocityArgs {
 }
 
 @ArgsType()
-class MissDistanceArgs {
+export class MissDistanceArgs {
     @Field(type => LONG_DISTANCE_UNIT, { defaultValue: LONG_DISTANCE_UNIT.KM })
     unit: LONG_DISTANCE_UNIT
 

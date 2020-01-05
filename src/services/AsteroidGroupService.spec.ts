@@ -1,10 +1,10 @@
-import { AsteroidService } from '@/asteroids/AsteroidService'
+import { AsteroidService } from '@/services/AsteroidService'
 import { anything, deepEqual, instance, mock, verify, when } from 'ts-mockito'
-import { AsteroidGroupService } from '@/asteroidGroups/AsteroidGroupService'
-import { Asteroid } from '@/asteroids/Asteroid'
-import { AsteroidMocker } from '@/asteroids/mockers/AsteroidMocker'
+import { AsteroidGroupService } from '@/services/AsteroidGroupService'
+import { Asteroid } from '@/entities/Asteroid'
+import { AsteroidMocker } from '@/test-helpers/AsteroidMocker'
 import { SortBy, SortDirection } from '@/helpers/enums'
-import { AsteroidGroupMonth } from '@/asteroidGroups/AsteroidGroup'
+import { AsteroidGroupMonth } from '@/entities/AsteroidGroup'
 
 describe('AsteroidGroupService', () => {
     let asteroidServiceMock: AsteroidService
