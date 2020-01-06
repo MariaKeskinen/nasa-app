@@ -1,9 +1,9 @@
 import 'reflect-metadata'
-import '@/container'
+import { format } from 'date-fns'
 import { connection } from '@/database'
 import { AsteroidNeoWsService } from '@/nasa-api/AsteroidNeoWsService'
 import { NasaApiService } from '@/nasa-api/NasaApiService'
-import { format } from 'date-fns'
+import '@/container'
 
 require('dotenv').config()
 

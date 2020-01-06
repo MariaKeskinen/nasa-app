@@ -2,16 +2,15 @@ import 'reflect-metadata'
 import express from 'express'
 import graphqlHTTP from 'express-graphql'
 import bodyParser from 'body-parser'
-import { createSchema } from '@/schema'
+
 import '@/container'
+import { createSchema } from '@/schema'
 import { connection } from '@/database'
 import { dataLoaders } from '@/graphql/dataloaders'
 
 require('dotenv').config()
 
 const app = express()
-
-const isDevelopment = process.env.NODE_ENV === 'DEVELOPMENT'
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -22,8 +21,8 @@ connection.then(() => {
         '/graphql',
         graphqlHTTP({
             schema,
-            graphiql: isDevelopment,
-            pretty: isDevelopment,
+            graphiql: true, // In real production mode, should consider graphql should not be visible
+            pretty: true, // In real production mode, usually no need to pretty print
             context: {
                 loaders: dataLoaders
             }

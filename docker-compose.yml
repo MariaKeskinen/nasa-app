@@ -1,0 +1,11 @@
+version: '2'
+services:
+  web:
+      build: .
+      command: yarn start
+      volumes:
+          - ./db.sql:/var/www/nasa/db.sql
+      env_file:
+        - ./.env
+      restart: on-failure
+
