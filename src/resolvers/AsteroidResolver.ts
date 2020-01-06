@@ -1,9 +1,9 @@
 import { Args, ArgsType, Field, FieldResolver, Int, Resolver, Root } from 'type-graphql'
 import { Service } from 'typedi'
+import { Min } from 'class-validator'
 import { Asteroid } from '@/entities/Asteroid'
 import { Diameter } from '@/entities/Diameter'
 import { UNIT } from '@/helpers/enums'
-import { Min } from 'class-validator'
 
 @ArgsType()
 export class DiameterArgs {

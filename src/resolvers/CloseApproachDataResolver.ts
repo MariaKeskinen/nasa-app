@@ -1,8 +1,8 @@
 import { Args, ArgsType, Field, FieldResolver, Int, Resolver, Root } from 'type-graphql'
 import round from 'lodash.round'
+import { Min } from 'class-validator'
 import { CloseApproachData } from '@/entities/CloseApproachData'
 import { LONG_DISTANCE_UNIT, VELOCITY_UNIT } from '@/helpers/enums'
-import { Min } from 'class-validator'
 
 @ArgsType()
 export class RelativeVelocityArgs {

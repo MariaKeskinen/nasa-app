@@ -1,8 +1,8 @@
 import { ArgsType, Field, InputType, Int } from 'type-graphql'
+import { Max, Min } from 'class-validator'
 import { IsDateString } from '@/graphql/validators/IsDateString'
 import { IsSameOrBeforeDay } from '@/graphql/validators/IsSameOrBeforeDay'
 import { SortBy, SortDirection } from '@/helpers/enums'
-import { Max, Min } from 'class-validator'
 
 @ArgsType()
 export class SortLimitArgs {

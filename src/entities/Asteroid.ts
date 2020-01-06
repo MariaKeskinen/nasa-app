@@ -1,7 +1,7 @@
 import { Field, Float, Int, ObjectType } from 'type-graphql'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { Diameter } from '@/entities/Diameter'
 import { CloseApproachData } from '@/entities/CloseApproachData'
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
 @ObjectType()

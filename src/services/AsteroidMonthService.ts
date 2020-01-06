@@ -1,6 +1,6 @@
 import { Container, Service } from 'typedi'
-import { Asteroid } from '@/entities/Asteroid'
 import { format, getMonth, getYear, subYears } from 'date-fns'
+import { Asteroid } from '@/entities/Asteroid'
 import { getNextMonthWithYear } from '@/helpers/date-helpers'
 import { AsteroidService } from '@/services/AsteroidService'
 import { MonthYearArgs } from '@/resolvers/QueryArguments'
