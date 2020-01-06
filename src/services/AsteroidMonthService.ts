@@ -1,49 +1,28 @@
-import { Service } from 'typedi'
-import { SortBy, SortDirection } from '@/helpers/enums'
+import { Container, Service } from 'typedi'
 import { Asteroid } from '@/entities/Asteroid'
-import { format, getDate, getMonth, getYear, lastDayOfMonth, subYears } from 'date-fns'
+import { format, getMonth, getYear, subYears } from 'date-fns'
 import { getNextMonthWithYear } from '@/helpers/date-helpers'
 import { AsteroidService } from '@/services/AsteroidService'
 import { MonthYearArgs } from '@/resolvers/QueryArguments'
 import { AsteroidMonth } from '@/entities/AsteroidMonth'
 import { CloseApproachData } from '@/entities/CloseApproachData'
+import { AsteroidsByMonthLoaderKey } from '@/graphql/dataloaders'
 
 @Service()
 export class AsteroidMonthService {
-    constructor(private readonly asteroidService: AsteroidService) {}
-
-    public async getAsteroidsByMonth(
-        month: number,
-        year: number,
-        sort: SortBy,
-        sortDirection: SortDirection,
-        limit?: number
-    ): Promise<Asteroid[]> {
-        const startDate = new Date(year, month, 1)
-
-        const filter = {
-            startDate: format(startDate, 'yyyy-MM-dd'),
-            endDate: format(new Date(year, month, getDate(lastDayOfMonth(startDate))), 'yyyy-MM-dd')
-        }
-
-        return this.asteroidService.getAsteroids(filter, sort, sortDirection, limit)
+    public static async getAsteroidsByMonthBatch(
+        keys: AsteroidsByMonthLoaderKey[]
+    ): Promise<Asteroid[][]> {
+        return AsteroidMonthService.getAsteroidDataByMonthBatch<Asteroid>('asteroid', keys)
     }
 
-    public async getAsteroidApproachesByMonth(
-        month: number,
-        year: number,
-        sort: SortBy,
-        sortDirection: SortDirection,
-        limit?: number
-    ): Promise<CloseApproachData[]> {
-        const startDate = new Date(year, month, 1)
-
-        const filter = {
-            startDate: format(startDate, 'yyyy-MM-dd'),
-            endDate: format(new Date(year, month, getDate(lastDayOfMonth(startDate))), 'yyyy-MM-dd')
-        }
-
-        return this.asteroidService.getCloseApproachData(filter, sort, sortDirection, limit)
+    public static async getAsteroidApproachDataByMonthBatch(
+        keys: AsteroidsByMonthLoaderKey[]
+    ): Promise<CloseApproachData[][]> {
+        return AsteroidMonthService.getAsteroidDataByMonthBatch<CloseApproachData>(
+            'closeApproachData',
+            keys
+        )
     }
 
     public getGroupsByMonth(start: MonthYearArgs, end: MonthYearArgs): AsteroidMonth[] {
@@ -70,5 +49,80 @@ export class AsteroidMonthService {
         )
 
         return groups
+    }
+
+    private static async getAsteroidDataByMonthBatch<T extends Asteroid | CloseApproachData>(
+        type: 'asteroid' | 'closeApproachData',
+        keys: AsteroidsByMonthLoaderKey[]
+    ): Promise<T[][]> {
+        const asteroidService = Container.get(AsteroidService)
+
+        const filter = {
+            startDate: format(new Date(keys[0].year, keys[0].month), 'yyyy-MM-dd'),
+            endDate: format(
+                new Date(keys[keys.length - 1].year, keys[keys.length - 1].month),
+                'yyyy-MM-dd'
+            )
+        }
+
+        let data: T[]
+
+        if (type === 'asteroid') {
+            data = (await asteroidService.getAsteroids(
+                filter,
+                keys[0].sort,
+                keys[0].sortDirection
+            )) as T[]
+        } else {
+            data = (await asteroidService.getCloseApproachData(
+                filter,
+                keys[0].sort,
+                keys[0].sortDirection
+            )) as T[]
+        }
+
+        return keys.reduce<T[][]>((arr, key) => {
+            arr.push(
+                AsteroidMonthService.getAsteroidsOfSelectedMonth<T>(
+                    data,
+                    keys[0].month,
+                    keys[0].year,
+                    keys[0].limit
+                )
+            )
+            return arr
+        }, [])
+    }
+
+    private static getAsteroidsOfSelectedMonth<T extends Asteroid | CloseApproachData>(
+        data: T[],
+        month: number,
+        year: number,
+        limit?: number
+    ): T[] {
+        const currentMonthData: T[] = []
+        for (let i = 0; i < data.length; i++) {
+            if (AsteroidMonthService.approachedInSelectedMonth(data[i], month, year)) {
+                currentMonthData.push(data[i])
+            }
+
+            if (limit && currentMonthData.length === limit) break
+        }
+
+        return currentMonthData
+    }
+
+    private static approachedInSelectedMonth(
+        data: Asteroid | CloseApproachData,
+        month: number,
+        year: number
+    ): boolean {
+        if (data instanceof Asteroid) {
+            return !!data.closeApproachData?.find(
+                cad => getMonth(cad.epochDate) === month && getYear(cad.epochDate) === year
+            )
+        }
+
+        return getMonth(data.epochDate) === month && getYear(data.epochDate) === year
     }
 }
