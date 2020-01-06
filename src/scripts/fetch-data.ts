@@ -3,19 +3,15 @@ import '@/container'
 import { connection } from '@/database'
 import { AsteroidNeoWsService } from '@/nasa-api/AsteroidNeoWsService'
 import { NasaApiService } from '@/nasa-api/NasaApiService'
+import { format } from 'date-fns'
 
 require('dotenv').config()
 
 async function fetchNeoFeed() {
-    if (process.argv.length < 2) {
-        console.error('Start and end date are required arguments')
-        process.exit(1)
-    }
-
     const asteroidNeoWsService = new AsteroidNeoWsService(new NasaApiService())
 
-    const start = process.argv[2]
-    const end = process.argv[3]
+    const start = process.argv[2] || format(new Date(), 'yyyy-MM-dd')
+    const end = process.argv[3] || format(new Date(), 'yyyy-MM-dd')
 
     console.info(`Importing asteroids from ${start} to ${end}`)
 
