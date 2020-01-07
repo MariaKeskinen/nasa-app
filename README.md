@@ -16,7 +16,7 @@ Data is fetched from [Nasa's open api (Asteroids NeoWs)](https://api.nasa.gov/).
 ### With Docker-compose
 
 1.  Copy `.env-sample` to `.env` and set needed values
-2.  Start container `docker-compose up -d`
+2.  Build and start container `docker-compose up -d --build`
 
 ## Development
 
