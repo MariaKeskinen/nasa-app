@@ -1,4 +1,4 @@
-import { Container, Service } from 'typedi'
+import { Service } from 'typedi'
 import axios from 'axios'
 
 export enum API_TYPES {
@@ -21,7 +21,7 @@ export class NasaApiService {
         params: Record<string, string>
     ): Promise<Record<string, any>> {
         const queryString = this.parseQueryString(params)
-        const fullUrl = `${Container.get('nasaApiBaseUrl')}/${type}?${queryString}`
+        const fullUrl = `${process.env.NASA_API_BASE_URL}/${type}?${queryString}`
         const response = await axios.get(fullUrl)
 
         return response.data
@@ -33,7 +33,7 @@ export class NasaApiService {
             queryString += `&${param}=${params[param]}`
         }
 
-        queryString += `&api_key=${Container.get('nasaApiKey')}`
+        queryString += `&api_key=${process.env.NASA_API_KEY}`
 
         return queryString.replace('&', '')
     }
