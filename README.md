@@ -57,6 +57,8 @@ I can recommend to use REST Client, that supports Graphql for testing. For examp
 
 ## NOTES / Known problems
 
+-   Normally database should not be included to git, but it is now, so its packed with other code for testing
+
 -   Using beta version of type-graphql, because it fixes nested validations bug, in real production app, beta version should be used with cautions
 -   Diameter is saved only in meters. Converting to miles and feet isn't 100% accurate if using multiple decimals
 -   Validation errors are only default errors
