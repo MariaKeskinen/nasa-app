@@ -85,9 +85,9 @@ export class AsteroidMonthService {
             arr.push(
                 AsteroidMonthService.getAsteroidsOfSelectedMonth<T>(
                     data,
-                    keys[0].month,
-                    keys[0].year,
-                    keys[0].limit
+                    key.month,
+                    key.year,
+                    key.limit
                 )
             )
             return arr

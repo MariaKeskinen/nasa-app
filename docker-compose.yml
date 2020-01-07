@@ -7,5 +7,7 @@ services:
           - ./db.sql:/var/www/nasa/db.sql
       env_file:
         - ./.env
+      ports:
+          - "4000:4000"
       restart: on-failure
 

@@ -12,23 +12,24 @@ require('dotenv').config()
 
 const app = express()
 
+const schema = createSchema()
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-connection.then(() => {
-    const schema = createSchema()
-    app.use(
-        '/graphql',
-        graphqlHTTP({
-            schema,
-            graphiql: true, // In real production mode, should consider graphql should not be visible
-            pretty: true, // In real production mode, usually no need to pretty print
-            context: {
-                loaders: dataLoaders
-            }
-        })
-    )
+app.use(
+    '/graphql',
+    graphqlHTTP({
+        schema,
+        graphiql: true, // In real production mode, should consider graphql should not be visible
+        pretty: true, // In real production mode, usually no need to pretty print
+        context: {
+            loaders: dataLoaders
+        }
+    })
+)
 
+connection.then(() => {
     app.listen(4000)
     console.log('Running in port 4000')
 })
